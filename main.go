@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 
 	"github.com/akamensky/argparse"
 	"github.com/mingrammer/cfmt"
 )
 
 func ping(ip string, port int, pool chan int) {
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", ip, port))
+	// 设置超时时间为500毫秒,如果超过500毫秒没有响应则认为端口关闭
+	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", ip, port), 500*time.Millisecond)
 	if err != nil {
 		pool <- 0
 		return
